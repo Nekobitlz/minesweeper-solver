@@ -8,9 +8,9 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
 
     val cells = Array(width) { Array(height) { Cell(0, 0) } }
 
-    init {
+    private fun initGame(x: Int, y: Int) {
         generateCells()
-        createBombs()
+        createBombs(x, y)
         setNeighborBombsCount()
         findEmptyCells()
     }
@@ -24,20 +24,26 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         }
     }
 
-    private fun createBombs() {
+    private fun createBombs(clickX: Int, clickY: Int) {
 
         for (bomb in 0 until bombsCount) {
-            createBombAtRandomPoint()
+            createBombAtRandomPoint(clickX, clickY)
         }
     }
 
-    private fun createBombAtRandomPoint() {
+    private fun createBombAtRandomPoint(clickX: Int, clickY: Int) {
 
         val x = Random.nextInt(width)
         val y = Random.nextInt(height)
 
+        if (x == clickX && y == clickY) {
+            createBombAtRandomPoint(clickX, clickY)
+            return
+            TODO( "Maybe remove @return")
+        }
+
         if (cells[x][y].cellType == CellType.BOMB) {
-            createBombAtRandomPoint()
+            createBombAtRandomPoint(clickX, clickY)
         } else {
             cells[x][y].cellType = CellType.BOMB
             return
@@ -56,18 +62,17 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     }
 
     private fun setBombsCountForNearestCells(x: Int, y: Int) {
+
         for (nearestX in (x - 1)..(x + 1)) {
             for (nearestY in (y - 1)..(y + 1)) {
                 if (coordinatesAreValid(nearestX, nearestY) && cells[nearestX][nearestY] != cells[x][y]) {
                     cells[nearestX][nearestY].bombsNearby++
-                    cells[nearestX][nearestY].cellType = CellType.COVERED
                 }
             }
         }
     }
 
     private fun coordinatesAreValid(x: Int, y: Int): Boolean = x != -1 && y != -1 && x != width && y != height
-
 
     private fun findEmptyCells() {
         for (x in 0 until width) {
