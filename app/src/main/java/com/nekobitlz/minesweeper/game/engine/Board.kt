@@ -7,14 +7,19 @@ import kotlin.random.Random
 class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
 
     val cells = Array(width) { Array(height) { Cell(0, 0) } }
+
+    private val size = width * height
     private var isFullyOpen = false
+    private var cellsCount = 0
 
     fun initGame(x: Int, y: Int) {
         generateCells()
         createBombs(x, y)
         setNeighborBombsCount()
         findEmptyCells()
+
         isFullyOpen = false
+        cellsCount = 0
     }
 
     fun openCells(x: Int, y: Int) {
@@ -25,6 +30,8 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         when (cell.cellType) {
             BOMB -> openAllCells()
             EMPTY -> {
+                cellsCount++
+
                 for (nearestX in (x - 1)..(x + 1)) {
                     for (nearestY in (y - 1)..(y + 1)) {
                         if (coordinatesAreValid(nearestX, nearestY) &&
@@ -36,11 +43,13 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
                     }
                 }
             }
-            COVERED -> { /* nothing */ }
+            COVERED -> { cellsCount++ }
         }
     }
 
     fun isFullyOpen(): Boolean = isFullyOpen
+
+    fun closedAllExceptBombs(): Boolean = cellsCount == size - bombsCount
 
     private fun openAllCells() {
         cells.forEach { it.forEach { cell -> cell.open() } }
