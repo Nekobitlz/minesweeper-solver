@@ -7,12 +7,14 @@ import kotlin.random.Random
 class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
 
     val cells = Array(width) { Array(height) { Cell(0, 0) } }
+    private var isFullyOpen = false
 
     fun initGame(x: Int, y: Int) {
         generateCells()
         createBombs(x, y)
         setNeighborBombsCount()
         findEmptyCells()
+        isFullyOpen = false
     }
 
     fun openCells(x: Int, y: Int) {
@@ -21,18 +23,27 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
 
         cell.open()
 
-        if (cell.cellType.isEmpty()) {
-            for (nearestX in (x - 1)..(x + 1)) {
-                for (nearestY in (y - 1)..(y + 1)) {
-                    if (coordinatesAreValid(nearestX, nearestY)
-                        && cells[nearestX][nearestY] != cells[x][y]
-                        && !cells[nearestX][nearestY].isOpened
-                    ) {
-                        openCells(nearestX, nearestY)
+        when (cell.cellType) {
+            CellType.BOMB -> openAllCells()
+            CellType.EMPTY -> {
+                for (nearestX in (x - 1)..(x + 1)) {
+                    for (nearestY in (y - 1)..(y + 1)) {
+                        if (coordinatesAreValid(nearestX, nearestY)
+                            && cells[nearestX][nearestY] != cells[x][y]
+                            && !cells[nearestX][nearestY].isOpened
+                        ) {
+                            openCells(nearestX, nearestY)
+                        }
                     }
                 }
             }
+            CellType.COVERED -> { /* nothing */ }
         }
+    }
+
+    private fun openAllCells() {
+        cells.forEach { it.forEach { cell -> cell.open() } }
+        isFullyOpen = true
     }
 
     private fun generateCells() {
@@ -59,7 +70,6 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         if (x == clickX && y == clickY) {
             createBombAtRandomPoint(clickX, clickY)
             return
-            TODO( "Maybe remove @return")
         }
 
         if (cells[x][y].cellType == CellType.BOMB) {
@@ -105,4 +115,6 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
             }
         }
     }
+
+    fun isFullyOpen(): Boolean = isFullyOpen
 }
