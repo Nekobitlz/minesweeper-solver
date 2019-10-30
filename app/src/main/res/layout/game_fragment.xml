@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.otaliastudios.zoom.ZoomLayout
+<FrameLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".game.ui.fragments.Game"
+    tools:context=".game.ui.fragments.Game">
+
+    <Button
+        android:id="@+id/btn_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset" />
+
+<com.otaliastudios.zoom.ZoomLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
     android:background="@color/colorPrimary"
     app:hasClickableChildren="true">
 
@@ -17,3 +27,4 @@
     </GridLayout>
 
 </com.otaliastudios.zoom.ZoomLayout>
+</FrameLayout>

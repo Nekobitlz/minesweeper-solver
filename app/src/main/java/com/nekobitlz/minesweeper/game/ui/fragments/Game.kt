@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.nekobitlz.minesweeper.R
-import com.nekobitlz.minesweeper.game.enums.CellType
+import com.nekobitlz.minesweeper.game.models.Cell
 import com.nekobitlz.minesweeper.game.viewmodels.BoardViewModel
 import kotlinx.android.synthetic.main.btn_cell.view.*
 import kotlinx.android.synthetic.main.game_fragment.*
-import kotlin.random.Random
 
 class Game : Fragment() {
 
@@ -25,7 +24,7 @@ class Game : Fragment() {
     }
 
     private lateinit var viewModel: BoardViewModel
-    private lateinit var cells: MutableList<MutableList<View>>
+    private lateinit var cellButtons: MutableList<MutableList<Button>>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +36,12 @@ class Game : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(BoardViewModel::class.java)
-        cells = mutableListOf()
+        initViewModel()
+        initViews()
+    }
+
+    private fun initViews() {
+        cellButtons = mutableListOf()
 
         val columnCount = viewModel.getColumnCount()
         val rowCount = viewModel.getRowCount()
@@ -46,129 +49,90 @@ class Game : Fragment() {
         gl_board.columnCount = columnCount
         gl_board.rowCount = rowCount
 
+        btn_reset.setOnClickListener {
+            viewModel.reset()
+            resetButtons()
+        }
+
         for (x in 0 until columnCount) {
-            val rowCells = mutableListOf<View>()
+            val rowCells = mutableListOf<Button>()
 
             for (y in 0 until rowCount) {
-                val cellLayout = LayoutInflater.from(this.context).inflate(R.layout.btn_cell, LinearLayout(this.context), true)
-                val cellType = viewModel.getCellType(x, y)
+                val cellLayout = LayoutInflater.from(this.context)
+                    .inflate(R.layout.btn_cell, LinearLayout(this.context), true)
 
                 cellLayout.button.setOnClickListener {
-                    when (cellType) {
-                        CellType.BOMB -> {
-                            Snackbar.make(it, "BOOM!!", Snackbar.LENGTH_LONG).show()
-                            it.setBackgroundColor(Color.RED)
-                        }
-                        CellType.EMPTY -> {
-                            /* no text */
-                            it.setBackgroundColor(Color.BLUE)
-                            openEmptyArea(x, y, columnCount, rowCount, cellsCount = 0)
-                        }
-                        CellType.COVERED -> {
-                            it.setBackgroundColor(Color.BLUE)
-                            openEmptyArea(x, y, columnCount, rowCount, cellsCount = 0)
-                        }
-                    }
+                    viewModel.handleShortPress(x, y)
                 }
 
                 gl_board.addView(cellLayout)
                 rowCells.add(cellLayout.button)
             }
 
-            cells.add(rowCells)
+            cellButtons.add(rowCells)
         }
     }
 
-    private fun openEmptyArea(x: Int, y: Int, width: Int, height: Int, cellsCount: Int) {
-        var count = cellsCount
-        var currentCell: CellType
-        var isOpened: Boolean
-        var currentCellButton: Button
-        var random = Random(width).nextInt(3, height / 2)
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(BoardViewModel::class.java)
+        viewModel.getCells().observe(this, Observer { updateUI(it) })
+    }
 
-        while (count < random) {
-            if (x > 0) {
-                currentCell = viewModel.getCellType(x - 1, y) as CellType
-                isOpened = viewModel.getCellOpened(x - 1, y)
-                currentCellButton = (cells[x - 1][y] as Button)
+    private fun updateButton(cell: Cell) {
+        val x = cell.x
+        val y = cell.y
 
-                if (currentCell.isEmpty() && !isOpened) {
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    viewModel.setCellOpened(x - 1, y)
+        val button = cellButtons[x][y]
+        val cellType = cell.cellType
 
-                    openEmptyArea(x - 1, y, width, height, count)
-                }
-
-                if (currentCell.isCovered()) {
-                    currentCellButton.text = viewModel.getNearbyCount(x - 1, y)
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    count++
-                }
+        when {
+            cellType.isBomb() && cell.isOpened -> {
+                button.setBackgroundColor(Color.RED)
             }
-
-            if (x < width - 1) {
-                currentCell = viewModel.getCellType(x + 1, y) as CellType
-                isOpened = viewModel.getCellOpened(x + 1, y)
-                currentCellButton = (cells[x + 1][y] as Button)
-
-                if (currentCell.isEmpty() && !isOpened) {
-                    if (currentCell.isCovered()) {
-                        currentCellButton.text = viewModel.getNearbyCount(x + 1, y)
-                    }
-
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    viewModel.setCellOpened(x + 1, y)
-
-                    openEmptyArea(x + 1, y, width, height, count)
-                }
-
-                if (currentCell.isCovered()) {
-                    currentCellButton.text = viewModel.getNearbyCount(x + 1, y)
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    count++
-                }
+            cellType.isEmpty() && cell.isOpened -> {
+                /* no text */
+                button.setBackgroundColor(Color.BLACK)
             }
-
-            if (y > 0) {
-                currentCell = viewModel.getCellType(x, y - 1) as CellType
-                isOpened = viewModel.getCellOpened(x, y - 1)
-                currentCellButton = (cells[x][y - 1] as Button)
-
-                if (currentCell.isEmpty() && !isOpened) {
-
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    viewModel.setCellOpened(x, y - 1)
-
-                    openEmptyArea(x, y - 1, width, height, count)
-                }
-
-                if (currentCell.isCovered()) {
-                    currentCellButton.text = viewModel.getNearbyCount(x, y - 1)
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    count++
-                }
+            cellType.isCovered() && cell.isOpened -> {
+                button.text = viewModel.getNearbyCount(x, y)
+                button.setBackgroundColor(Color.BLACK)
             }
-
-            if (y < height - 1) {
-                currentCell = viewModel.getCellType(x, y + 1) as CellType
-                isOpened = viewModel.getCellOpened(x, y + 1)
-                currentCellButton = (cells[x][y + 1] as Button)
-
-                if (currentCell.isEmpty() && !isOpened) {
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    viewModel.setCellOpened(x, y + 1)
-
-                    openEmptyArea(x, y + 1, width, height, count)
-                }
-
-                if (currentCell.isCovered()) {
-                    currentCellButton.text = viewModel.getNearbyCount(x, y + 1)
-                    currentCellButton.setBackgroundColor(Color.BLUE)
-                    count++
-                }
+            else -> {
+                button.text = ""
+                button.setBackgroundColor(Color.CYAN)
             }
-
-            break
         }
+    }
+
+    private fun updateUI(cells: Array<Array<Cell>>?) {
+        if (cells != null) {
+            val width = cells.size
+            val height = cells[0].size
+
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    updateButton(cells[x][y])
+                }
+            }
+        }
+    }
+
+    private fun resetButtons() {
+        val width = cellButtons.size
+        val height = cellButtons[0].size
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val button = cellButtons[x][y]
+
+                button.text = ""
+                button.setBackgroundColor(Color.CYAN)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.reset()
     }
 }
