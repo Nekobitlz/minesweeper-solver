@@ -1,14 +1,22 @@
 package com.nekobitlz.minesweeper.game.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nekobitlz.minesweeper.game.engine.GameEngine
 import com.nekobitlz.minesweeper.game.models.Cell
 import com.nekobitlz.minesweeper.game.repositories.BoardRepository
 
 class BoardViewModel: ViewModel() {
 
     private val boardRepository = BoardRepository
-    private val cells = boardRepository.loadCells()
+    private val cells = MutableLiveData<Array<Array<Cell>>>()
+    private val engine = MutableLiveData<GameEngine>()
+
+    init {
+        cells.value = boardRepository.loadCells()
+        engine.value = boardRepository.loadEngine()
+    }
 
     fun getCells(): LiveData<Array<Array<Cell>>> = cells
 
@@ -16,13 +24,15 @@ class BoardViewModel: ViewModel() {
 
     fun getRowCount(): Int = boardRepository.getRows()
 
-    fun getCellType(x: Int, y: Int): Any = cells.value!![x][y].cellType
-
     fun getNearbyCount(x: Int, y: Int): String = cells.value!![x][y].bombsNearby.toString()
 
-    fun getCellOpened(x: Int, y: Int): Boolean = cells.value!![x][y].isOpened
+    fun handleShortPress(x: Int, y: Int) {
+        engine.value!!.handleShortPress(x, y)
+        cells.value = engine.value!!.getCells()
+    }
 
-    fun setCellOpened(x: Int, y: Int) {
-        cells.value!![x][y].isOpened = true
+    fun reset() {
+        engine.value!!.reset()
+        cells.value = engine.value!!.getCells()
     }
 }
