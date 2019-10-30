@@ -1,6 +1,6 @@
 package com.nekobitlz.minesweeper.game.engine
 
-import com.nekobitlz.minesweeper.game.enums.CellType
+import com.nekobitlz.minesweeper.game.enums.CellType.*
 import com.nekobitlz.minesweeper.game.models.Cell
 import kotlin.random.Random
 
@@ -18,28 +18,29 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     }
 
     fun openCells(x: Int, y: Int) {
-
         val cell = cells[x][y]
 
         cell.open()
 
         when (cell.cellType) {
-            CellType.BOMB -> openAllCells()
-            CellType.EMPTY -> {
+            BOMB -> openAllCells()
+            EMPTY -> {
                 for (nearestX in (x - 1)..(x + 1)) {
                     for (nearestY in (y - 1)..(y + 1)) {
-                        if (coordinatesAreValid(nearestX, nearestY)
-                            && cells[nearestX][nearestY] != cells[x][y]
-                            && !cells[nearestX][nearestY].isOpened
+                        if (coordinatesAreValid(nearestX, nearestY) &&
+                            cells[nearestX][nearestY] != cells[x][y] &&
+                            !cells[nearestX][nearestY].isOpened
                         ) {
                             openCells(nearestX, nearestY)
                         }
                     }
                 }
             }
-            CellType.COVERED -> { /* nothing */ }
+            COVERED -> { /* nothing */ }
         }
     }
+
+    fun isFullyOpen(): Boolean = isFullyOpen
 
     private fun openAllCells() {
         cells.forEach { it.forEach { cell -> cell.open() } }
@@ -47,7 +48,6 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     }
 
     private fun generateCells() {
-
         for (x in 0 until width) {
             for (y in 0 until height) {
                 cells[x][y] = Cell(x, y)
@@ -56,14 +56,12 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     }
 
     private fun createBombs(clickX: Int, clickY: Int) {
-
         for (bomb in 0 until bombsCount) {
             createBombAtRandomPoint(clickX, clickY)
         }
     }
 
     private fun createBombAtRandomPoint(clickX: Int, clickY: Int) {
-
         val x = Random.nextInt(width)
         val y = Random.nextInt(height)
 
@@ -72,19 +70,18 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
             return
         }
 
-        if (cells[x][y].cellType == CellType.BOMB) {
+        if (cells[x][y].cellType.isBomb()) {
             createBombAtRandomPoint(clickX, clickY)
         } else {
-            cells[x][y].cellType = CellType.BOMB
+            cells[x][y].cellType = BOMB
             return
         }
     }
 
     private fun setNeighborBombsCount() {
-
         for (x in 0 until width) {
             for (y in 0 until height) {
-                if (cells[x][y].cellType == CellType.BOMB) {
+                if (cells[x][y].cellType.isBomb()) {
                     setBombsCountForNearestCells(x, y)
                 }
             }
@@ -92,7 +89,6 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     }
 
     private fun setBombsCountForNearestCells(x: Int, y: Int) {
-
         for (nearestX in (x - 1)..(x + 1)) {
             for (nearestY in (y - 1)..(y + 1)) {
                 if (coordinatesAreValid(nearestX, nearestY) && cells[nearestX][nearestY] != cells[x][y]) {
@@ -109,12 +105,10 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
             for (y in 0 until height) {
                 val currentCell = cells[x][y]
 
-                if (currentCell.bombsNearby == 0 && currentCell.cellType != CellType.BOMB) {
-                    currentCell.cellType = CellType.EMPTY
+                if (currentCell.bombsNearby == 0 && currentCell.cellType != BOMB) {
+                    currentCell.cellType = EMPTY
                 }
             }
         }
     }
-
-    fun isFullyOpen(): Boolean = isFullyOpen
 }

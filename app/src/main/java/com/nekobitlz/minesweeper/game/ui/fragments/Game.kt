@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.nekobitlz.minesweeper.game.ui.fragments
 
 import android.graphics.Color
@@ -78,6 +80,19 @@ class Game : Fragment() {
         }
     }
 
+    private fun updateUI(cells: Array<Array<Cell>>?) {
+        if (cells != null) {
+            val width = cells.size
+            val height = cells[0].size
+
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    updateButton(cells[x][y])
+                }
+            }
+        }
+    }
+
     private fun updateButton(cell: Cell) {
         val x = cell.x
         val y = cell.y
@@ -106,19 +121,6 @@ class Game : Fragment() {
     private fun setDefaultButtonStyle(button: Button) {
         button.text = ""
         button.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-    }
-
-    private fun updateUI(cells: Array<Array<Cell>>?) {
-        if (cells != null) {
-            val width = cells.size
-            val height = cells[0].size
-
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    updateButton(cells[x][y])
-                }
-            }
-        }
     }
 
     private fun resetButtons() {
