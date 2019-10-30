@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nekobitlz.minesweeper.R
+import com.nekobitlz.minesweeper.game.extensions.setDefaultStyle
 import com.nekobitlz.minesweeper.game.models.Cell
 import com.nekobitlz.minesweeper.game.viewmodels.BoardViewModel
 import kotlinx.android.synthetic.main.btn_cell.view.*
@@ -100,27 +101,22 @@ class Game : Fragment() {
         val button = cellButtons[x][y]
         val cellType = cell.cellType
 
-        when {
-            cellType.isBomb() && cell.isOpened -> {
-                button.setBackgroundColor(Color.RED)
-            }
-            cellType.isEmpty() && cell.isOpened -> {
-                /* no text */
-                button.setBackgroundColor(resources.getColor(R.color.colorCellOpened))
-            }
-            cellType.isCovered() && cell.isOpened -> {
-                button.text = viewModel.getNearbyCount(x, y)
-                button.setBackgroundColor(resources.getColor(R.color.colorCellOpened))
-            }
-            else -> {
-                setDefaultButtonStyle(button)
+        button.apply {
+            when {
+                cellType.isBomb() && cell.isOpened -> {
+                    setBackgroundColor(Color.RED)
+                }
+                cellType.isEmpty() && cell.isOpened -> {
+                    /* no text */
+                    setBackgroundColor(resources.getColor(R.color.colorCellOpened))
+                }
+                cellType.isCovered() && cell.isOpened -> {
+                    text = viewModel.getNearbyCount(x, y)
+                    setBackgroundColor(resources.getColor(R.color.colorCellOpened))
+                }
+                else -> setDefaultStyle()
             }
         }
-    }
-
-    private fun setDefaultButtonStyle(button: Button) {
-        button.text = ""
-        button.setBackgroundColor(resources.getColor(R.color.colorPrimary))
     }
 
     private fun resetButtons() {
@@ -130,7 +126,7 @@ class Game : Fragment() {
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val button = cellButtons[x][y]
-                setDefaultButtonStyle(button)
+                button.setDefaultStyle()
             }
         }
     }

@@ -27,8 +27,10 @@ class GameEngine {
 
     private fun start(x: Int, y: Int) {
         gameState = GameState.PLAYING
-        board.initGame(x, y)
-        board.openCells(x, y)
+        with(board) {
+            initGame(x, y)
+            openCells(x, y)
+        }
     }
 
     private fun gameOver() {
