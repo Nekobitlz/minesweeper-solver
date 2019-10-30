@@ -40,6 +40,11 @@ class Game : Fragment() {
         initViews()
     }
 
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(BoardViewModel::class.java)
+        viewModel.getCells().observe(this, Observer { updateUI(it) })
+    }
+
     private fun initViews() {
         cellButtons = mutableListOf()
 
@@ -73,11 +78,6 @@ class Game : Fragment() {
         }
     }
 
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(BoardViewModel::class.java)
-        viewModel.getCells().observe(this, Observer { updateUI(it) })
-    }
-
     private fun updateButton(cell: Cell) {
         val x = cell.x
         val y = cell.y
@@ -91,17 +91,21 @@ class Game : Fragment() {
             }
             cellType.isEmpty() && cell.isOpened -> {
                 /* no text */
-                button.setBackgroundColor(Color.BLACK)
+                button.setBackgroundColor(resources.getColor(R.color.colorCellOpened))
             }
             cellType.isCovered() && cell.isOpened -> {
                 button.text = viewModel.getNearbyCount(x, y)
-                button.setBackgroundColor(Color.BLACK)
+                button.setBackgroundColor(resources.getColor(R.color.colorCellOpened))
             }
             else -> {
-                button.text = ""
-                button.setBackgroundColor(Color.CYAN)
+                setDefaultButtonStyle(button)
             }
         }
+    }
+
+    private fun setDefaultButtonStyle(button: Button) {
+        button.text = ""
+        button.setBackgroundColor(resources.getColor(R.color.colorPrimary))
     }
 
     private fun updateUI(cells: Array<Array<Cell>>?) {
@@ -124,15 +128,8 @@ class Game : Fragment() {
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val button = cellButtons[x][y]
-
-                button.text = ""
-                button.setBackgroundColor(Color.CYAN)
+                setDefaultButtonStyle(button)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.reset()
     }
 }
