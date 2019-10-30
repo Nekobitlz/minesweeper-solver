@@ -4,9 +4,13 @@ import androidx.annotation.VisibleForTesting
 import com.nekobitlz.minesweeper.game.enums.CellType
 
 class Cell(val x: Int, val y: Int) {
-    var cellType = CellType.EMPTY
+    var cellType = CellType.COVERED
     var isOpened = false
     var bombsNearby = 0
+
+    fun open() {
+        isOpened = true
+    }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     override fun toString(): String {
