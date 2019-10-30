@@ -8,11 +8,31 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
 
     val cells = Array(width) { Array(height) { Cell(0, 0) } }
 
-    private fun initGame(x: Int, y: Int) {
+    fun initGame(x: Int, y: Int) {
         generateCells()
         createBombs(x, y)
         setNeighborBombsCount()
         findEmptyCells()
+    }
+
+    fun openCells(x: Int, y: Int) {
+
+        val cell = cells[x][y]
+
+        cell.open()
+
+        if (cell.cellType.isEmpty()) {
+            for (nearestX in (x - 1)..(x + 1)) {
+                for (nearestY in (y - 1)..(y + 1)) {
+                    if (coordinatesAreValid(nearestX, nearestY)
+                        && cells[nearestX][nearestY] != cells[x][y]
+                        && !cells[nearestX][nearestY].isOpened
+                    ) {
+                        openCells(nearestX, nearestY)
+                    }
+                }
+            }
+        }
     }
 
     private fun generateCells() {
