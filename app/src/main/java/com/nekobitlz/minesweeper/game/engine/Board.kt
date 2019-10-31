@@ -1,5 +1,6 @@
 package com.nekobitlz.minesweeper.game.engine
 
+import com.nekobitlz.minesweeper.game.enums.CellState.NO_STATE
 import com.nekobitlz.minesweeper.game.enums.CellType.*
 import com.nekobitlz.minesweeper.game.models.Cell
 import kotlin.random.Random
@@ -25,25 +26,19 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     fun openCells(x: Int, y: Int) {
         val cell = cells[x][y]
 
-        cell.open()
+        if (!cell.cellState.isFlagged()) {
+            cell.open()
 
-        when (cell.cellType) {
-            BOMB -> openAllCells()
-            EMPTY -> {
-                cellsCount++
-
-                for (nearestX in (x - 1)..(x + 1)) {
-                    for (nearestY in (y - 1)..(y + 1)) {
-                        if (coordinatesAreValid(nearestX, nearestY) &&
-                            cells[nearestX][nearestY] != cells[x][y] &&
-                            !cells[nearestX][nearestY].isOpened
-                        ) {
-                            openCells(nearestX, nearestY)
-                        }
-                    }
+            when (cell.cellType) {
+                BOMB -> openAllCells()
+                EMPTY -> {
+                    cellsCount++
+                    openNearestCells(x, y)
+                }
+                COVERED -> {
+                    cellsCount++
                 }
             }
-            COVERED -> { cellsCount++ }
         }
     }
 
@@ -51,9 +46,29 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
 
     fun closedAllExceptBombs(): Boolean = cellsCount == size - bombsCount
 
+    fun handleFlag(x: Int, y: Int) {
+        val cell = cells[x][y]
+
+        if (cell.cellState.isFlagged()) cell.removeFlag()
+        else cell.putFlag()
+    }
+
     private fun openAllCells() {
         cells.forEach { it.forEach { cell -> cell.open() } }
         isFullyOpen = true
+    }
+
+    private fun openNearestCells(x: Int, y: Int) {
+        for (nearestX in (x - 1)..(x + 1)) {
+            for (nearestY in (y - 1)..(y + 1)) {
+                if (coordinatesAreValid(nearestX, nearestY) &&
+                    cells[nearestX][nearestY] != cells[x][y] &&
+                    cells[nearestX][nearestY].cellState == NO_STATE
+                ) {
+                    openCells(nearestX, nearestY)
+                }
+            }
+        }
     }
 
     private fun generateCells() {
