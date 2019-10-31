@@ -7,8 +7,4 @@ enum class CellType {
     EMPTY;
 
     fun isBomb() = this == BOMB
-
-    fun isCovered() = this == COVERED
-
-    fun isEmpty() = this == EMPTY
 }
