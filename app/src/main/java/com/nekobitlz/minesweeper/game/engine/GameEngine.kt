@@ -8,7 +8,8 @@ import com.nekobitlz.minesweeper.game.models.Cell
 
 class GameEngine {
 
-    private var gameState = NO_STATE
+    var gameState = NO_STATE
+
     private val board = Board(ROW_COUNT, COLUMN_COUNT, BOMBS_COUNT)
 
     fun handleShortPress(x: Int, y: Int) {

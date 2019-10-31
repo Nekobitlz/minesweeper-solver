@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/color_dialog_background"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_small_8"
+    tools:context=".game.ui.fragments.dialogs.WinningFragment">
+
+    <TextView
+        android:id="@+id/tw_winning"
+        android:layout_width="@dimen/dialog_title_size_250"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:text="@string/winning_title"
+        android:textAlignment="center"
+        android:textColor="@color/color_dialog_text"
+        android:textSize="@dimen/font_huge_title_48" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_reset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_tiny_4"
+            android:layout_marginEnd="@dimen/spacing_tiny_4"
+            android:layout_weight="1"
+            android:text="@string/winning_btn_reset"
+            android:textColor="@color/color_dialog_text"
+            android:textSize="@dimen/font_small_12" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_tiny_4"
+            android:layout_marginEnd="@dimen/spacing_tiny_4"
+            android:layout_weight="1"
+            android:text="@string/winning_btn_back"
+            android:textColor="@color/color_dialog_text"
+            android:textSize="@dimen/font_small_12" />
+    </LinearLayout>
+
+</LinearLayout>

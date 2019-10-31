@@ -13,8 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nekobitlz.minesweeper.R
+import com.nekobitlz.minesweeper.game.enums.GameState
+import com.nekobitlz.minesweeper.game.enums.GameState.GAME_OVER
+import com.nekobitlz.minesweeper.game.enums.GameState.WIN
 import com.nekobitlz.minesweeper.game.extensions.setDefaultStyle
 import com.nekobitlz.minesweeper.game.models.Cell
+import com.nekobitlz.minesweeper.game.ui.fragments.dialogs.GameOverFragment
+import com.nekobitlz.minesweeper.game.ui.fragments.dialogs.WinningFragment
 import com.nekobitlz.minesweeper.game.viewmodels.BoardViewModel
 import kotlinx.android.synthetic.main.btn_cell.view.*
 import kotlinx.android.synthetic.main.game_fragment.*
@@ -46,6 +51,7 @@ class Game : Fragment() {
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(BoardViewModel::class.java)
         viewModel.getCells().observe(this, Observer { updateUI(it) })
+        viewModel.getGameState().observe(this, Observer { updateGameState(it) })
     }
 
     private fun initViews() {
@@ -129,5 +135,25 @@ class Game : Fragment() {
                 button.setDefaultStyle()
             }
         }
+    }
+
+    private fun updateGameState(gameState: GameState) {
+        when (gameState) {
+            GAME_OVER -> showGameOverFragment()
+            WIN -> showWinningFragment()
+            else -> { /* enjoy game */ }
+        }
+    }
+
+    private fun showGameOverFragment() {
+        val gameOverFragment = GameOverFragment.newInstance()
+        gameOverFragment.isCancelable = false
+        gameOverFragment.show(this.fragmentManager!!, "gameOverFragment")
+    }
+
+    private fun showWinningFragment() {
+        val winningFragment = WinningFragment.newInstance()
+        winningFragment.isCancelable = false
+        winningFragment.show(this.fragmentManager!!, "winningFragment")
     }
 }

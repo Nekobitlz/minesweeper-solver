@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- font sizes -->
-    <dimen name="font_huge_title_48">48dp</dimen>
+    <dimen name="font_huge_title_48">48sp</dimen>
     <dimen name="font_large_20">18sp</dimen>
     <dimen name="font_normal_16">16sp</dimen>
     <dimen name="font_small_12">12sp</dimen>
@@ -15,4 +15,5 @@
 
     <!--size elements-->
     <dimen name="btn_cell_size_5">5dp</dimen>
+    <dimen name="dialog_title_size_250">250dp</dimen>
 </resources>
