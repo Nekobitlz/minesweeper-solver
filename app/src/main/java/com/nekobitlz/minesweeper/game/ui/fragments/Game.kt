@@ -109,7 +109,7 @@ class Game : Fragment() {
 
         button.apply {
             when (cell.cellState) {
-                OPENED -> setStyleByCellType(cellType, x, y, nearbyCount = viewModel.getNearbyCount(x, y))
+                OPENED -> setStyleByCellType(cellType, nearbyCount = viewModel.getNearbyCount(x, y))
                 FLAGGED -> setBackgroundColor(resources.getColor(R.color.colorCellFlagged))
                 NO_STATE -> setDefaultStyle()
             }
