@@ -27,6 +27,8 @@ import kotlinx.android.synthetic.main.game_fragment.*
 class Game : Fragment() {
 
     companion object {
+        private const val GAME_OVER_FRAGMENT = "GAME_OVER_FRAGMENT"
+        private const val WINNING_FRAGMENT = "WINNING_FRAGMENT"
 
         fun newInstance() = Game()
     }
@@ -37,9 +39,7 @@ class Game : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.game_fragment, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.game_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -148,12 +148,12 @@ class Game : Fragment() {
     private fun showGameOverFragment() {
         val gameOverFragment = GameOverFragment.newInstance()
         gameOverFragment.isCancelable = false
-        gameOverFragment.show(this.fragmentManager!!, "gameOverFragment")
+        gameOverFragment.show(this.fragmentManager!!, GAME_OVER_FRAGMENT)
     }
 
     private fun showWinningFragment() {
         val winningFragment = WinningFragment.newInstance()
         winningFragment.isCancelable = false
-        winningFragment.show(this.fragmentManager!!, "winningFragment")
+        winningFragment.show(this.fragmentManager!!, WINNING_FRAGMENT)
     }
 }

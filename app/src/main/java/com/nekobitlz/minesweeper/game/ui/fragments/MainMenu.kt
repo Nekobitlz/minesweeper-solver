@@ -13,9 +13,7 @@ class MainMenu : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_main_menu, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_main_menu, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,7 +23,7 @@ class MainMenu : Fragment() {
             if (savedInstanceState == null) {
                activity!!.supportFragmentManager
                     .beginTransaction()
-                    .add(R.id.fl_container, Game.newInstance(), "game")
+                    .add(R.id.fl_container, Game.newInstance(), GAME_FRAGMENT)
                     .addToBackStack(null)
                     .commit()
             }
@@ -33,6 +31,8 @@ class MainMenu : Fragment() {
     }
 
     companion object {
+        private const val GAME_FRAGMENT = "GAME_FRAGMENT"
+
         fun newInstance() = MainMenu()
     }
 }

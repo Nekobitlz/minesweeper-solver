@@ -19,8 +19,12 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fl_container, MainMenu.newInstance(), "mainMenu")
+                .add(R.id.fl_container, MainMenu.newInstance(), MAIN_MENU_FRAGMENT)
                 .commit()
         }
+    }
+
+    companion object {
+        private const val MAIN_MENU_FRAGMENT = "MAIN_MENU_FRAGMENT"
     }
 }
