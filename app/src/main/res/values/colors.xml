@@ -7,4 +7,5 @@
     <color name="colorCellOpened">#707070</color>
     <color name="color_dialog_text">#fff</color>
     <color name="color_dialog_background">#413939</color>
+    <color name="colorCellFlagged">#fff000</color>
 </resources>

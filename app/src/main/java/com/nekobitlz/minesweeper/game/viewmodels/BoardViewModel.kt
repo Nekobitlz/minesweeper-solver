@@ -33,12 +33,22 @@ class BoardViewModel: ViewModel() {
 
     fun handleShortPress(x: Int, y: Int) {
         engine.value!!.handleShortPress(x, y)
-        cells.value = engine.value!!.getCells()
-        gameState.value = engine.value!!.gameState
+        updateDataValues()
+    }
+
+    fun handleLongPress(x: Int, y: Int): Boolean {
+        engine.value!!.handleLongPress(x, y)
+        updateDataValues()
+
+        return true
     }
 
     fun reset() {
         engine.value!!.reset()
+        updateDataValues()
+    }
+
+    private fun updateDataValues() {
         cells.value = engine.value!!.getCells()
         gameState.value = engine.value!!.gameState
     }

@@ -2,7 +2,6 @@
 
 package com.nekobitlz.minesweeper.game.ui.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.nekobitlz.minesweeper.R
+import com.nekobitlz.minesweeper.game.enums.CellState.*
 import com.nekobitlz.minesweeper.game.enums.GameState
 import com.nekobitlz.minesweeper.game.enums.GameState.GAME_OVER
 import com.nekobitlz.minesweeper.game.enums.GameState.WIN
 import com.nekobitlz.minesweeper.game.extensions.setDefaultStyle
+import com.nekobitlz.minesweeper.game.extensions.setStyleByCellType
 import com.nekobitlz.minesweeper.game.models.Cell
 import com.nekobitlz.minesweeper.game.ui.fragments.dialogs.GameOverFragment
 import com.nekobitlz.minesweeper.game.ui.fragments.dialogs.WinningFragment
@@ -75,9 +76,8 @@ class Game : Fragment() {
                 val cellLayout = LayoutInflater.from(this.context)
                     .inflate(R.layout.btn_cell, LinearLayout(this.context), true)
 
-                cellLayout.button.setOnClickListener {
-                    viewModel.handleShortPress(x, y)
-                }
+                cellLayout.button.setOnClickListener { viewModel.handleShortPress(x, y) }
+                cellLayout.button.setOnLongClickListener { viewModel.handleLongPress(x, y) }
 
                 gl_board.addView(cellLayout)
                 rowCells.add(cellLayout.button)
@@ -108,19 +108,10 @@ class Game : Fragment() {
         val cellType = cell.cellType
 
         button.apply {
-            when {
-                cellType.isBomb() && cell.isOpened -> {
-                    setBackgroundColor(Color.RED)
-                }
-                cellType.isEmpty() && cell.isOpened -> {
-                    /* no text */
-                    setBackgroundColor(resources.getColor(R.color.colorCellOpened))
-                }
-                cellType.isCovered() && cell.isOpened -> {
-                    text = viewModel.getNearbyCount(x, y)
-                    setBackgroundColor(resources.getColor(R.color.colorCellOpened))
-                }
-                else -> setDefaultStyle()
+            when (cell.cellState) {
+                OPENED -> setStyleByCellType(cellType, x, y, nearbyCount = viewModel.getNearbyCount(x, y))
+                FLAGGED -> setBackgroundColor(resources.getColor(R.color.colorCellFlagged))
+                NO_STATE -> setDefaultStyle()
             }
         }
     }

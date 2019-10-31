@@ -27,6 +27,12 @@ class GameEngine {
         }
     }
 
+    fun handleLongPress(x: Int, y: Int) = when (gameState) {
+        NO_STATE -> start(x, y)
+        PLAYING -> board.handleFlag(x, y)
+        else -> { /* nothing */ }
+    }
+
     fun reset() {
         gameState = NO_STATE
     }
