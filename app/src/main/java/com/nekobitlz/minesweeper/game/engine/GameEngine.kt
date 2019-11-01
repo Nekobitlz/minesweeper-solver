@@ -20,7 +20,7 @@ class GameEngine {
 
                 when {
                     board.isFullyOpen() -> gameOver()
-                    board.closedAllExceptBombs() -> winGame()
+                    board.openedAllExceptBombs() -> winGame()
                 }
             }
             else -> { /* nothing */ }

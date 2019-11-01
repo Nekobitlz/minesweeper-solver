@@ -44,7 +44,7 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
 
     fun isFullyOpen(): Boolean = isFullyOpen
 
-    fun closedAllExceptBombs(): Boolean = cellsCount == size - bombsCount
+    fun openedAllExceptBombs(): Boolean = cellsCount == size - bombsCount
 
     fun handleFlag(x: Int, y: Int) {
         val cell = cells[x][y]
