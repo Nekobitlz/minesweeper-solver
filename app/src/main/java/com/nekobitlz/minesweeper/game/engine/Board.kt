@@ -54,30 +54,20 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
     }
 
     private fun openAllCells() {
-        cells.forEach { it.forEach { cell -> cell.open() } }
+        forEachCell { x, y -> cells[x][y].open() }
         isFullyOpen = true
     }
 
-    private fun openNearestCells(x: Int, y: Int) {
-        for (nearestX in (x - 1)..(x + 1)) {
-            for (nearestY in (y - 1)..(y + 1)) {
-                if (coordinatesAreValid(nearestX, nearestY) &&
-                    cells[nearestX][nearestY] != cells[x][y] &&
-                    cells[nearestX][nearestY].cellState == NO_STATE
-                ) {
-                    openCells(nearestX, nearestY)
-                }
-            }
+    private fun openNearestCells(x: Int, y: Int) = forEachNearestCell(x, y) { nearestX, nearestY ->
+        if (coordinatesAreValid(nearestX, nearestY) &&
+            cells[nearestX][nearestY] != cells[x][y] &&
+            cells[nearestX][nearestY].cellState == NO_STATE
+        ) {
+            openCells(nearestX, nearestY)
         }
     }
 
-    private fun generateCells() {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                cells[x][y] = Cell(x, y)
-            }
-        }
-    }
+    private fun generateCells() = forEachCell { x, y -> cells[x][y] = Cell(x, y) }
 
     private fun createBombs(clickX: Int, clickY: Int) {
         for (bomb in 0 until bombsCount) {
@@ -85,53 +75,61 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         }
     }
 
-    private fun createBombAtRandomPoint(clickX: Int, clickY: Int) {
+    private fun createBombAtRandomPoint(targetX: Int, targetY: Int) {
         val x = Random.nextInt(width)
         val y = Random.nextInt(height)
 
-        if (x == clickX && y == clickY) {
-            createBombAtRandomPoint(clickX, clickY)
+        if (x == targetX && y == targetY) {
+            createBombAtRandomPoint(targetX, targetY)
             return
         }
 
         if (cells[x][y].cellType.isBomb()) {
-            createBombAtRandomPoint(clickX, clickY)
+            createBombAtRandomPoint(targetX, targetY)
         } else {
             cells[x][y].cellType = BOMB
             return
         }
     }
 
-    private fun setNeighborBombsCount() {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                if (cells[x][y].cellType.isBomb()) {
-                    setBombsCountForNearestCells(x, y)
-                }
-            }
+    private fun setNeighborBombsCount() = forEachCell { x, y ->
+        if (cells[x][y].cellType.isBomb()) {
+            setBombsCountForNearestCells(x, y)
         }
     }
 
     private fun setBombsCountForNearestCells(x: Int, y: Int) {
-        for (nearestX in (x - 1)..(x + 1)) {
-            for (nearestY in (y - 1)..(y + 1)) {
-                if (coordinatesAreValid(nearestX, nearestY) && cells[nearestX][nearestY] != cells[x][y]) {
-                    cells[nearestX][nearestY].bombsNearby++
-                }
+        forEachNearestCell(x, y) { nearestX, nearestY ->
+            if (coordinatesAreValid(nearestX, nearestY) &&
+                cells[nearestX][nearestY] != cells[x][y]
+            ) {
+                cells[nearestX][nearestY].bombsNearby++
             }
         }
     }
 
     private fun coordinatesAreValid(x: Int, y: Int): Boolean = x != -1 && y != -1 && x != width && y != height
 
-    private fun findEmptyCells() {
+    private fun findEmptyCells() = forEachCell { x, y ->
+        val currentCell = cells[x][y]
+
+        if (currentCell.bombsNearby == 0 && currentCell.cellType != BOMB) {
+            currentCell.cellType = EMPTY
+        }
+    }
+
+    private fun forEachCell(func: (x: Int, y: Int) -> Unit) {
         for (x in 0 until width) {
             for (y in 0 until height) {
-                val currentCell = cells[x][y]
+                func(x, y)
+            }
+        }
+    }
 
-                if (currentCell.bombsNearby == 0 && currentCell.cellType != BOMB) {
-                    currentCell.cellType = EMPTY
-                }
+    private fun forEachNearestCell(x: Int, y: Int, func: (nearestX: Int, nearestY: Int) -> Unit) {
+        for (nearestX in (x - 1)..(x + 1)) {
+            for (nearestY in (y - 1)..(y + 1)) {
+                func(nearestX, nearestY)
             }
         }
     }
