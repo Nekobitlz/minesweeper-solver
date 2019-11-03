@@ -5,15 +5,15 @@ import com.nekobitlz.minesweeper.game.enums.CellType.*
 import com.nekobitlz.minesweeper.game.models.Cell
 import kotlin.random.Random
 
-class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
+internal class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
 
-    val cells = Array(width) { Array(height) { Cell(0, 0) } }
+    internal val cells = Array(width) { Array(height) { Cell(0, 0) } }
 
     private val size = width * height
     private var isFullyOpen = false
     private var cellsCount = 0
 
-    fun initGame(x: Int, y: Int) {
+    internal fun initGame(x: Int, y: Int) {
         generateCells()
         createBombs(x, y)
         setNeighborBombsCount()
@@ -23,7 +23,7 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         cellsCount = 0
     }
 
-    fun openCells(x: Int, y: Int) {
+    internal fun openCells(x: Int, y: Int) {
         val cell = cells[x][y]
 
         if (!cell.cellState.isFlagged()) {
@@ -42,18 +42,18 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         }
     }
 
-    fun isFullyOpen(): Boolean = isFullyOpen
+    internal fun isFullyOpen(): Boolean = isFullyOpen
 
-    fun openedAllExceptBombs(): Boolean = cellsCount == size - bombsCount
+    internal fun openedAllExceptBombs(): Boolean = cellsCount == size - bombsCount
 
-    fun handleFlag(x: Int, y: Int) {
+    internal fun handleFlag(x: Int, y: Int) {
         val cell = cells[x][y]
 
         if (cell.cellState.isFlagged()) cell.removeFlag()
         else cell.putFlag()
     }
 
-    fun reset() = forEachCell { x, y ->
+    internal fun reset() = forEachCell { x, y ->
         val currentCell = cells[x][y]
 
         currentCell.cellState = NO_STATE

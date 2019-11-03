@@ -5,22 +5,22 @@ import com.nekobitlz.minesweeper.game.enums.CellState.*
 import com.nekobitlz.minesweeper.game.enums.CellType
 
 class Cell(val x: Int, val y: Int) {
-    var cellType = CellType.COVERED
-    var bombsNearby = 0
+    internal var cellType = CellType.COVERED
+    internal var bombsNearby = 0
 
-    var cellState = NO_STATE
-    var previousState = NO_STATE
+    internal var cellState = NO_STATE
+    private var previousState = NO_STATE
 
-    fun open() {
+    internal fun open() {
         cellState = OPENED
     }
 
-    fun putFlag() {
+    internal fun putFlag() {
         previousState = cellState
         cellState = FLAGGED
     }
 
-    fun removeFlag() {
+    internal fun removeFlag() {
         if (cellState == FLAGGED) cellState = previousState
     }
 

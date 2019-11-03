@@ -8,11 +8,10 @@ import com.nekobitlz.minesweeper.game.models.Cell
 
 class GameEngine {
 
-    var gameState = NO_STATE
-
+    internal var gameState = NO_STATE
     private val board = Board(ROW_COUNT, COLUMN_COUNT, BOMBS_COUNT)
 
-    fun handleShortPress(x: Int, y: Int) {
+    internal fun handleShortPress(x: Int, y: Int) {
         when (gameState) {
             NO_STATE -> start(x, y)
             PLAYING -> {
@@ -27,18 +26,18 @@ class GameEngine {
         }
     }
 
-    fun handleLongPress(x: Int, y: Int) = when (gameState) {
+    internal fun handleLongPress(x: Int, y: Int) = when (gameState) {
         NO_STATE -> start(x, y)
         PLAYING -> board.handleFlag(x, y)
         else -> { /* nothing */ }
     }
 
-    fun reset() {
+    internal fun reset() {
         gameState = NO_STATE
         board.reset()
     }
 
-    fun getCells(): Array<Array<Cell>> = board.cells
+    internal fun getCells(): Array<Array<Cell>> = board.cells
 
     private fun start(x: Int, y: Int) {
         gameState = PLAYING
