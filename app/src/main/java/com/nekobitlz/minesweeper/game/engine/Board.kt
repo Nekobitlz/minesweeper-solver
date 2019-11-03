@@ -53,6 +53,16 @@ class Board(private val width: Int, private val height: Int, private val bombsCo
         else cell.putFlag()
     }
 
+    fun reset() = forEachCell { x, y ->
+        val currentCell = cells[x][y]
+
+        currentCell.cellState = NO_STATE
+        currentCell.cellType = COVERED
+        currentCell.bombsNearby = 0
+        isFullyOpen = false
+        cellsCount = 0
+    }
+
     private fun openAllCells() {
         forEachCell { x, y -> cells[x][y].open() }
         isFullyOpen = true

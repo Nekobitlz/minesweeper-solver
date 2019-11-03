@@ -35,6 +35,7 @@ class GameEngine {
 
     fun reset() {
         gameState = NO_STATE
+        board.reset()
     }
 
     fun getCells(): Array<Array<Cell>> = board.cells
