@@ -1,6 +1,5 @@
 package com.nekobitlz.minesweeper.game.models
 
-import androidx.annotation.VisibleForTesting
 import com.nekobitlz.minesweeper.game.enums.CellState.*
 import com.nekobitlz.minesweeper.game.enums.CellType
 
@@ -22,10 +21,5 @@ class Cell(val x: Int, val y: Int) {
 
     internal fun removeFlag() {
         if (cellState == FLAGGED) cellState = previousState
-    }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    override fun toString(): String {
-        return "Cell(x=$x, y=$y, cellType=$cellType, bombsNearby=$bombsNearby)"
     }
 }
