@@ -89,16 +89,10 @@ internal class Board(private val width: Int, private val height: Int, private va
         val x = Random.nextInt(width)
         val y = Random.nextInt(height)
 
-        if (x == targetX && y == targetY) {
-            createBombAtRandomPoint(targetX, targetY)
-            return
-        }
-
-        if (cells[x][y].cellType.isBomb()) {
+        if (cells[x][y].cellType.isBomb() || areCloseToTarget(targetX, targetY, x, y)) {
             createBombAtRandomPoint(targetX, targetY)
         } else {
             cells[x][y].cellType = BOMB
-            return
         }
     }
 
@@ -110,15 +104,17 @@ internal class Board(private val width: Int, private val height: Int, private va
 
     private fun setBombsCountForNearestCells(x: Int, y: Int) {
         forEachNearestCell(x, y) { nearestX, nearestY ->
-            if (coordinatesAreValid(nearestX, nearestY) &&
-                cells[nearestX][nearestY] != cells[x][y]
-            ) {
+            if (coordinatesAreValid(nearestX, nearestY) && cells[nearestX][nearestY] != cells[x][y]) {
                 cells[nearestX][nearestY].bombsNearby++
             }
         }
     }
 
     private fun coordinatesAreValid(x: Int, y: Int): Boolean = x != -1 && y != -1 && x != width && y != height
+
+    private fun areCloseToTarget(targetX: Int, targetY: Int, x: Int, y: Int): Boolean {
+        return x in (targetX - 1..targetX + 1) && y in (targetY - 1..targetY + 1)
+    }
 
     private fun findEmptyCells() = forEachCell { x, y ->
         val currentCell = cells[x][y]

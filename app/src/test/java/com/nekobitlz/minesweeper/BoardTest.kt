@@ -29,7 +29,7 @@ class BoardTest {
     @Test
     fun getCells() {
         getCellsTest(9, 9, 10)
-        getCellsTest(10, 10, 99)
+        getCellsTest(10, 10, 91)
         getCellsTest(25, 45, 90)
     }
 
@@ -53,7 +53,7 @@ class BoardTest {
     @Test
     fun initGame() {
         initGameTest(9, 9, 10)
-        initGameTest(10, 10, 99)
+        initGameTest(10, 10, 91)
         initGameTest(25, 45, 90)
     }
 
@@ -98,7 +98,7 @@ class BoardTest {
     @Test
     fun openCells() {
         openCellsTest(9, 9, 10)
-        openCellsTest(10, 10, 99)
+        openCellsTest(10, 10, 91)
         openCellsTest(25, 45, 90)
     }
 
@@ -145,7 +145,7 @@ class BoardTest {
     @Test
     fun isFullyOpen() {
         isFullyOpenTest(9, 9, 10)
-        isFullyOpenTest(10, 10, 99)
+        isFullyOpenTest(10, 10, 91)
         isFullyOpenTest(25, 45, 90)
     }
 
@@ -170,7 +170,7 @@ class BoardTest {
     @Test
     fun openedAllExceptBombs() {
         openedAllExceptBombsTest(9, 9, 10)
-        openedAllExceptBombsTest(10, 10, 99)
+        openedAllExceptBombsTest(10, 10, 91)
         openedAllExceptBombsTest(25, 45, 90)
     }
 
@@ -193,7 +193,7 @@ class BoardTest {
     @Test
     fun handleFlag() {
         handleFlagTest(9, 9, 10)
-        handleFlagTest(10, 10, 99)
+        handleFlagTest(10, 10, 91)
         handleFlagTest(25, 45, 90)
     }
 
