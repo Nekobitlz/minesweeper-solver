@@ -1,6 +1,6 @@
 package com.nekobitlz.minesweeper.game.engine
 
-import com.nekobitlz.minesweeper.game.enums.CellState.NO_STATE
+import com.nekobitlz.minesweeper.game.enums.CellState.*
 import com.nekobitlz.minesweeper.game.enums.CellType.*
 import com.nekobitlz.minesweeper.game.models.Cell
 import kotlin.random.Random
@@ -49,8 +49,11 @@ internal class Board(private val width: Int, private val height: Int, private va
     internal fun handleFlag(x: Int, y: Int) {
         val cell = cells[x][y]
 
-        if (cell.cellState.isFlagged()) cell.removeFlag()
-        else cell.putFlag()
+        when (cell.cellState) {
+            FLAGGED -> cell.removeFlag()
+            NO_STATE -> cell.putFlag()
+            OPENED -> { /* do nothing */ }
+        }
     }
 
     internal fun reset() = forEachCell { x, y ->
