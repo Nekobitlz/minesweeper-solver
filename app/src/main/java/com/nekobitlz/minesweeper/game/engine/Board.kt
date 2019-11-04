@@ -35,9 +35,7 @@ internal class Board(private val width: Int, private val height: Int, private va
                     cellsCount++
                     openNearestCells(x, y)
                 }
-                COVERED -> {
-                    cellsCount++
-                }
+                COVERED -> cellsCount++
             }
         }
     }
@@ -59,9 +57,12 @@ internal class Board(private val width: Int, private val height: Int, private va
     internal fun reset() = forEachCell { x, y ->
         val currentCell = cells[x][y]
 
-        currentCell.cellState = NO_STATE
-        currentCell.cellType = COVERED
-        currentCell.bombsNearby = 0
+        currentCell.apply {
+            cellState = NO_STATE
+            cellType = COVERED
+            bombsNearby = 0
+        }
+
         isFullyOpen = false
         cellsCount = 0
     }
