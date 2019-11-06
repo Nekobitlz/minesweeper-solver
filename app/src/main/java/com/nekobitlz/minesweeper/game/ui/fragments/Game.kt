@@ -69,6 +69,10 @@ class Game : Fragment() {
             resetButtons()
         }
 
+        btn_solve.setOnClickListener {
+            viewModel.solve()
+        }
+
         for (x in 0 until columnCount) {
             val rowCells = mutableListOf<Button>()
 

@@ -1,5 +1,6 @@
 package com.nekobitlz.minesweeper.game.viewmodels
 
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,8 @@ import com.nekobitlz.minesweeper.game.engine.GameEngine
 import com.nekobitlz.minesweeper.game.enums.GameState
 import com.nekobitlz.minesweeper.game.models.Cell
 import com.nekobitlz.minesweeper.game.repositories.BoardRepository
+import com.nekobitlz.minesweeper.game.solver.Solver
+
 
 class BoardViewModel: ViewModel() {
 
@@ -51,5 +54,23 @@ class BoardViewModel: ViewModel() {
     private fun updateDataValues() {
         cells.value = engine.value!!.getCells()
         gameState.value = engine.value!!.gameState
+    }
+
+    fun solve() {
+        val solverTask = SolverAsyncTask()
+        solverTask.execute()
+    }
+
+    internal inner class SolverAsyncTask : AsyncTask<Void, Void, Void>() {
+
+        override fun doInBackground(vararg noargs: Void): Void? {
+            val solver = Solver()
+            solver.solve()
+            return null
+        }
+
+        override fun onPostExecute(result: Void?) {
+            updateDataValues()
+        }
     }
 }
