@@ -13,7 +13,10 @@ class GameEngine {
 
     internal fun handleShortPress(x: Int, y: Int) {
         when (gameState) {
-            NO_STATE -> start(x, y)
+            NO_STATE -> {
+                start(x, y)
+                if (board.openedAllExceptBombs()) winGame()
+            }
             PLAYING -> {
                 board.openCells(x, y)
 
