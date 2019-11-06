@@ -6,4 +6,6 @@ enum class CellState {
     NO_STATE;
 
     fun isFlagged(): Boolean = this == FLAGGED
+
+    fun isOpened(): Boolean = this == OPENED
 }

@@ -9,7 +9,7 @@ import com.nekobitlz.minesweeper.game.models.Cell
 class GameEngine {
 
     internal var gameState = NO_STATE
-    private val board = Board(ROW_COUNT, COLUMN_COUNT, BOMBS_COUNT)
+    internal val board = Board(ROW_COUNT, COLUMN_COUNT, BOMBS_COUNT)
 
     internal fun handleShortPress(x: Int, y: Int) {
         when (gameState) {
@@ -58,4 +58,6 @@ class GameEngine {
     private fun winGame() {
         gameState = WIN
     }
+
+    internal fun isFinished(): Boolean = gameState == GAME_OVER || gameState == WIN
 }

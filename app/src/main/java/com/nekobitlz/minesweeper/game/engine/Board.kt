@@ -75,6 +75,16 @@ internal class Board(private val width: Int, private val height: Int, private va
         remainingFlags = bombsCount
     }
 
+    internal fun getNeighbours(cell: Cell): MutableList<Cell> {
+        val neighbours = mutableListOf<Cell>()
+
+        forEachNearestCell(cell.x, cell.y) { nearestX, nearestY ->
+            neighbours.add(Cell(nearestX, nearestY))
+        }
+
+        return neighbours
+    }
+
     private fun openAllCells() {
         forEachCell { x, y -> cells[x][y].open() }
         isFullyOpen = true
