@@ -8,6 +8,7 @@ import kotlin.random.Random
 internal class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
 
     internal val cells = Array(width) { Array(height) { Cell(0, 0) } }
+    internal var remainingFlags = bombsCount
 
     private val size = width * height
     private var isFullyOpen = false
@@ -48,8 +49,14 @@ internal class Board(private val width: Int, private val height: Int, private va
         val cell = cells[x][y]
 
         when (cell.cellState) {
-            FLAGGED -> cell.removeFlag()
-            NO_STATE -> cell.putFlag()
+            FLAGGED -> {
+                cell.removeFlag()
+                remainingFlags++
+            }
+            NO_STATE -> {
+                cell.putFlag()
+                remainingFlags--
+            }
             OPENED -> { /* do nothing */ }
         }
     }
@@ -65,6 +72,7 @@ internal class Board(private val width: Int, private val height: Int, private va
 
         isFullyOpen = false
         cellsCount = 0
+        remainingFlags = bombsCount
     }
 
     private fun openAllCells() {
