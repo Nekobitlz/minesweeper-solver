@@ -22,12 +22,13 @@ internal class Board(private val width: Int, private val height: Int, private va
 
         isFullyOpen = false
         cellsCount = 0
+        remainingFlags = bombsCount
     }
 
     internal fun openCells(x: Int, y: Int) {
         val cell = cells[x][y]
 
-        if (!cell.cellState.isFlagged()) {
+        if (!cell.cellState.isFlagged() && !cell.cellState.isOpened()) {
             cell.open()
 
             when (cell.cellType) {
@@ -48,16 +49,18 @@ internal class Board(private val width: Int, private val height: Int, private va
     internal fun handleFlag(x: Int, y: Int) {
         val cell = cells[x][y]
 
-        when (cell.cellState) {
-            FLAGGED -> {
-                cell.removeFlag()
-                remainingFlags++
+        if (remainingFlags > 0) {
+            when (cell.cellState) {
+                FLAGGED -> {
+                    cell.removeFlag()
+                    remainingFlags++
+                }
+                NO_STATE -> {
+                    cell.putFlag()
+                    remainingFlags--
+                }
+                OPENED -> { /* do nothing */ }
             }
-            NO_STATE -> {
-                cell.putFlag()
-                remainingFlags--
-            }
-            OPENED -> { /* do nothing */ }
         }
     }
 
