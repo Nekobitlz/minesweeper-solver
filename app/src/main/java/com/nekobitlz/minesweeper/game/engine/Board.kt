@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 internal class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
 
-    internal val cells = Array(width) { Array(height) { Cell(0, 0) } }
+    internal var cells = Array(width) { Array(height) { Cell(0, 0) } }
     internal var remainingFlags = bombsCount
 
     private val size = width * height
@@ -64,14 +64,8 @@ internal class Board(private val width: Int, private val height: Int, private va
         }
     }
 
-    internal fun reset() = forEachCell { x, y ->
-        val currentCell = cells[x][y]
-
-        currentCell.apply {
-            cellState = NO_STATE
-            cellType = COVERED
-            bombsNearby = 0
-        }
+    internal fun reset() {
+        cells = Array(width) { Array(height) { Cell(0, 0) } }
 
         isFullyOpen = false
         cellsCount = 0
