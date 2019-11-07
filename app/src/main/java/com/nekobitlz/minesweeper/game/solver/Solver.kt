@@ -58,42 +58,35 @@ class Solver {
         val isolatedCount = isolatedCells.size
 
         if (cellGroups.isEmpty() && isolatedCount == gameEngine.board.remainingFlags) {
-            isolatedCells.forEach { it.forEach { cell -> gameEngine.handleLongPress(cell.x, cell.y) } }
+            isolatedCells.forEach { cell -> gameEngine.handleLongPress(cell.x, cell.y) }
             Log.d("Solver", "randomMove: handleLongPress")
         } else {
-            val cellCord = getRandomIsolatedCell(isolatedCount)
-            gameEngine.handleShortPress(cellCord.first, cellCord.second)
-            Log.d("Solver", "randomMove: handleShortPress ${cellCord.first} ${cellCord.second}")
+            val cellCord = isolatedCells[getRandomIsolatedCell(isolatedCount)]
+            gameEngine.handleShortPress(cellCord.x, cellCord.y)
+            Log.d("Solver", "randomMove: handleShortPress ${cellCord.x} ${cellCord.y}")
         }
 
         changed = isolatedCount > 0
         cellGroups = getCellGroups()
     }
 
-    private fun getIsolatedCells(): MutableList<MutableList<Cell>> {
-        val isolatedCells = gameEngine.getCells().map { it.toMutableList() }.toMutableList() //TODO make linear array
+    private fun getIsolatedCells(): MutableList<Cell> {
+        val isolatedCells = mutableListOf<Cell>()
+        gameEngine.getCells().forEach { it.forEach { cell -> isolatedCells.add(cell) } }
+        val copy = isolatedCells.toList()
 
-        gameEngine.getCells().map {
-            it.forEach { cell ->
-                val neighbours = gameEngine.board.getNeighbours(cell)
-                isolatedCells.map { isolated -> isolated.removeAll(neighbours) }
-            }
+        copy.map { cell ->
+            val neighbours = gameEngine.board.getNeighbours(cell)
+            isolatedCells.removeAll(neighbours)
         }
 
         return isolatedCells
     }
 
-    private fun getRandomIsolatedCell(isolatedCount: Int): Pair<Int, Int> {
+    private fun getRandomIsolatedCell(isolatedCount: Int): Int {
         val random = Random(seed = isolatedCount)
-        var indexX = random.nextInt(isolatedCount)
-        var indexY = random.nextInt(isolatedCount)
 
-        while (indexX == indexY) {
-            indexX = random.nextInt(isolatedCount)
-            indexY = random.nextInt(isolatedCount)
-        }
-
-        return indexX to indexY
+        return random.nextInt(isolatedCount + 1)
     }
 
     private fun subtractionMethod() {
