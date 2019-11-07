@@ -219,6 +219,21 @@ class BoardTest {
         board.cells.forEach { it.forEach { cell -> assertNotEquals(CellState.FLAGGED, cell.cellState) } }
     }
 
+    @Test
+    fun getNeighbours() {
+        getNeighbours(9, 9, 10)
+        getNeighbours(10, 10, 91)
+        getNeighbours(25, 45, 90)
+    }
+
+    private fun getNeighbours(width: Int, height: Int, bombs: Int) {
+        initBoard(width, height, bombs)
+        val neighbours = board.getNeighbours(board.cells[0][0])
+        val expected = mutableListOf(board.cells[0][1], board.cells[1][0], board.cells[1][1])
+
+        for (cell in expected) assertEquals(cell, neighbours[neighbours.indexOf(cell)])
+    }
+
     companion object {
         private const val ITERATIONS: Int = 25
     }
