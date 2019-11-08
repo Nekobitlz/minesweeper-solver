@@ -76,7 +76,7 @@ internal class Board(private val width: Int, private val height: Int, private va
         val neighbours = mutableListOf<Cell>()
 
         forEachNearestCell(cell.x, cell.y) { nearestX, nearestY ->
-            if (nearestX >= 0 && nearestY >= 0 && nearestX < 9 && nearestY < 9) {
+            if (coordinatesAreValid(nearestX, nearestY)) {
                 neighbours.add(cells[nearestX][nearestY])
             }
         }
