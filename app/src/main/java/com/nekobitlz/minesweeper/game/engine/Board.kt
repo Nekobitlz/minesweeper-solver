@@ -8,6 +8,7 @@ import kotlin.random.Random
 internal class Board(private val width: Int, private val height: Int, private val bombsCount: Int) {
 
     internal var cells = Array(width) { Array(height) { Cell(0, 0) } }
+    internal var isolatedClosedCells = mutableListOf<Cell>()
     internal var remainingFlags = bombsCount
 
     private val size = width * height
@@ -30,6 +31,8 @@ internal class Board(private val width: Int, private val height: Int, private va
 
         if (!cell.cellState.isFlagged() && !cell.cellState.isOpened()) {
             cell.open()
+            isolatedClosedCells.remove(cell)
+            isolatedClosedCells.removeAll(getNeighbours(cell))
 
             when (cell.cellType) {
                 BOMB -> openAllCells()
@@ -66,6 +69,7 @@ internal class Board(private val width: Int, private val height: Int, private va
 
     internal fun reset() {
         cells = Array(width) { Array(height) { Cell(0, 0) } }
+        isolatedClosedCells = mutableListOf()
 
         isFullyOpen = false
         cellsCount = 0
@@ -98,7 +102,10 @@ internal class Board(private val width: Int, private val height: Int, private va
         }
     }
 
-    private fun generateCells() = forEachCell { x, y -> cells[x][y] = Cell(x, y) }
+    private fun generateCells() = forEachCell { x, y ->
+        cells[x][y] = Cell(x, y)
+        isolatedClosedCells.add(cells[x][y])
+    }
 
     private fun createBombs(clickX: Int, clickY: Int) {
         for (bomb in 0 until bombsCount) {
