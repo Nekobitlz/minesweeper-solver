@@ -42,6 +42,8 @@ open class GameEngine {
 
     internal fun getCells(): Array<Array<Cell>> = board.cells
 
+    internal fun isFinished(): Boolean = gameState == GAME_OVER || gameState == WIN
+
     protected open fun start(x: Int, y: Int) {
         gameState = PLAYING
 
@@ -58,6 +60,4 @@ open class GameEngine {
     private fun winGame() {
         gameState = WIN
     }
-
-    internal fun isFinished(): Boolean = gameState == GAME_OVER || gameState == WIN
 }
