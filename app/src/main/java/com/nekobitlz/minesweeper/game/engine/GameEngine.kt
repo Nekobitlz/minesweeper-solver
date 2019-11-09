@@ -21,20 +21,7 @@ open class GameEngine {
                 board.openCells(x, y)
 
                 when {
-                    board.isFullyOpen() -> {
-                        var x1 = ""
-                        var y1 = ""
-                        board.cells.forEach {
-                            it.forEach { cell ->
-                                if (cell.cellType.isBomb()) {
-                                    x1 += "${cell.x}, "
-                                    y1 += "${cell.y}, "
-                                }
-                            }
-                        }
-                       // Log.d("ENGINE", "X: $x1 \nY: $y1")
-                        gameOver()
-                    }
+                    board.isFullyOpen() -> gameOver()
                     board.openedAllExceptBombs() -> winGame()
                 }
             }
