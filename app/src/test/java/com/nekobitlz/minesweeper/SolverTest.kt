@@ -1,9 +1,10 @@
-package com.nekobitlz.minesweeper.game.solver
+package com.nekobitlz.minesweeper
 
 import com.nekobitlz.minesweeper.game.engine.Board
 import com.nekobitlz.minesweeper.game.engine.GameEngine
 import com.nekobitlz.minesweeper.game.enums.CellType
 import com.nekobitlz.minesweeper.game.enums.GameState.*
+import com.nekobitlz.minesweeper.game.solver.Solver
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
