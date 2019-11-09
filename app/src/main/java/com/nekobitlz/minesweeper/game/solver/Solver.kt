@@ -15,7 +15,7 @@ class Solver {
     private val height = CacheManager.ROW_COUNT
 
     private var changed = true
-    private var cellGroups = mutableSetOf<CellGroup>()
+    private var cellGroups = setOf<CellGroup>()
 
     fun solve() {
         while (changed && !gameEngine.isFinished()) {
@@ -26,12 +26,12 @@ class Solver {
 
             subtractionMethod()
 
-            if (!changed && cellGroups.size > 0 && !gameEngine.isFinished()) probabilityMethod()
-            if (!changed && cellGroups.size == 0 && !gameEngine.isFinished()) randomMove()
+            if (!changed && cellGroups.isNotEmpty() && !gameEngine.isFinished()) probabilityMethod()
+            if (!changed && cellGroups.isEmpty() && !gameEngine.isFinished()) randomMove()
         }
     }
 
-    private fun getCellGroups(): MutableSet<CellGroup> {
+    private fun getCellGroups(): Set<CellGroup> {
         val cellGroups = mutableSetOf<CellGroup>()
         val openedCells = gameEngine.getCells().map {
             it.filter { cell -> cell.cellState.isOpened() && cell.cellType == CellType.COVERED }
@@ -65,18 +65,19 @@ class Solver {
         if (cellGroups.isEmpty() && isolatedCount == gameEngine.board.remainingFlags) {
             isolatedCells.forEach { cell -> gameEngine.handleLongPress(cell.x, cell.y) }
             Log.d("Solver", "randomMove: handleLongPress")
-        }
-        else when (gameEngine.gameState) {
-            NO_STATE -> {
-                val x = Random(width).nextInt(width - 1)
-                val y = Random(height).nextInt(height - 1)
+        } else {
+            when (gameEngine.gameState) {
+                NO_STATE -> {
+                    val x = Random(width).nextInt(width - 1)
+                    val y = Random(height).nextInt(height - 1)
 
-                gameEngine.handleShortPress(x, y)
-            }
-            else -> {
-                val cellCord = isolatedCells[getRandomIsolatedCell(isolatedCount)]
-                gameEngine.handleShortPress(cellCord.x, cellCord.y)
-                Log.d("Solver", "randomMove: handleShortPress ${cellCord.x} ${cellCord.y}")
+                    gameEngine.handleShortPress(x, y)
+                }
+                else -> {
+                    val cellCord = isolatedCells[getRandomIsolatedCell(isolatedCount)]
+                    gameEngine.handleShortPress(cellCord.x, cellCord.y)
+                    Log.d("Solver", "randomMove: handleShortPress ${cellCord.x} ${cellCord.y}")
+                }
             }
         }
 
@@ -121,14 +122,14 @@ class Solver {
         openByProbability(minProbabilityEntry, maxProbabilityEntry)
     }
 
-    private fun initProbabilities(): HashMap<Cell, Double> {
-        val probabilities = hashMapOf<Cell, Double>()
+    private fun initProbabilities(): Map<Cell, Double> {
+        val probabilities = mutableMapOf<Cell, Double>()
 
         for (cellGroup in cellGroups) {
             if (cellGroup.isNotEmpty()) {
                 for (cell in cellGroup) {
                     val indieProbability = cellGroup.bombsCount / cellGroup.size.toDouble()
-                    val oldProbability = if (probabilities[cell] != null) probabilities[cell]!! else 0.0
+                    val oldProbability = probabilities.getOrElse(cell, { 0.0 }) //getOrDefault requires API level 24 (current min is 23)
                     val newProbability = 1 - (1 - indieProbability) * (1 - oldProbability)
 
                     probabilities[cell] = newProbability
