@@ -11,12 +11,18 @@ import kotlin.random.Random
 
 class Solver {
 
-    private val gameEngine = CacheManager.loadEngine()
-    private val width = CacheManager.COLUMN_COUNT
-    private val height = CacheManager.ROW_COUNT
+    private var gameEngine = CacheManager.loadEngine()
+    private var width = CacheManager.COLUMN_COUNT
+    private var height = CacheManager.ROW_COUNT
 
     private var changed = true
     private var cellGroups = setOf<CellGroup>()
+
+    fun initSolver(gameEngine: GameEngine, width: Int, height: Int) {
+        this.gameEngine = gameEngine
+        this.width = width
+        this.height = height
+    }
 
     fun solve() {
         while (changed && !gameEngine.isFinished()) {
