@@ -5,9 +5,9 @@ import com.nekobitlz.minesweeper.game.models.Cell
 
 object CacheManager {
 
-    const val COLUMN_COUNT = 9
-    const val ROW_COUNT = 9
-    const val BOMBS_COUNT = 10
+    const val COLUMN_COUNT = 24     /* 9 9 10 - Beginner */
+    const val ROW_COUNT = 24        /* 16 16 40 - Intermediate */
+    const val BOMBS_COUNT = 99      /* 24 24 99 - Expert */
 
     private var engine = GameEngine()
     private var cells = engine.getCells()
