@@ -6,10 +6,10 @@ import com.nekobitlz.minesweeper.game.managers.CacheManager.COLUMN_COUNT
 import com.nekobitlz.minesweeper.game.managers.CacheManager.ROW_COUNT
 import com.nekobitlz.minesweeper.game.models.Cell
 
-class GameEngine {
+open class GameEngine {
 
     internal var gameState = NO_STATE
-    internal val board = Board(COLUMN_COUNT, ROW_COUNT, BOMBS_COUNT)
+    internal var board = Board(COLUMN_COUNT, ROW_COUNT, BOMBS_COUNT)
 
     internal fun handleShortPress(x: Int, y: Int) {
         when (gameState) {
@@ -21,7 +21,20 @@ class GameEngine {
                 board.openCells(x, y)
 
                 when {
-                    board.isFullyOpen() -> gameOver()
+                    board.isFullyOpen() -> {
+                        var x1 = ""
+                        var y1 = ""
+                        board.cells.forEach {
+                            it.forEach { cell ->
+                                if (cell.cellType.isBomb()) {
+                                    x1 += "${cell.x}, "
+                                    y1 += "${cell.y}, "
+                                }
+                            }
+                        }
+                       // Log.d("ENGINE", "X: $x1 \nY: $y1")
+                        gameOver()
+                    }
                     board.openedAllExceptBombs() -> winGame()
                 }
             }
@@ -42,7 +55,7 @@ class GameEngine {
 
     internal fun getCells(): Array<Array<Cell>> = board.cells
 
-    private fun start(x: Int, y: Int) {
+    protected open fun start(x: Int, y: Int) {
         gameState = PLAYING
 
         with(board) {
