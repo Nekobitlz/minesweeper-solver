@@ -3,6 +3,7 @@
 package com.nekobitlz.minesweeper.game.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,12 +51,14 @@ class Game : Fragment() {
     }
 
     private fun initViewModel() {
+        Log.d("GAME", "InitViewModel: init")
         viewModel = ViewModelProviders.of(this).get(BoardViewModel::class.java)
         viewModel.getCells().observe(this, Observer { updateUI(it) })
         viewModel.getGameState().observe(this, Observer { updateGameState(it) })
     }
 
     private fun initViews() {
+        Log.d("GAME", "InitViews: init")
         cellButtons = mutableListOf()
 
         val columnCount = viewModel.getColumnCount()
@@ -92,6 +95,7 @@ class Game : Fragment() {
     }
 
     private fun updateUI(cells: Array<Array<Cell>>?) {
+        Log.d("GAME", "updateUI: updated")
         if (cells != null) {
             val width = cells.size
             val height = cells[0].size
@@ -108,10 +112,9 @@ class Game : Fragment() {
         val x = cell.x
         val y = cell.y
 
-        val button = cellButtons[x][y]
         val cellType = cell.cellType
 
-        button.apply {
+        cellButtons[x][y].apply {
             when (cell.cellState) {
                 OPENED -> setStyleByCellType(cellType, nearbyCount = viewModel.getNearbyCount(x, y))
                 FLAGGED -> setBackgroundColor(resources.getColor(R.color.colorCellFlagged))
@@ -121,18 +124,19 @@ class Game : Fragment() {
     }
 
     private fun resetButtons() {
+        Log.d("GAME", "resetButtons: reset")
         val width = cellButtons.size
         val height = cellButtons[0].size
 
         for (x in 0 until width) {
             for (y in 0 until height) {
-                val button = cellButtons[x][y]
-                button.setDefaultStyle()
+                cellButtons[x][y].setDefaultStyle()
             }
         }
     }
 
     private fun updateGameState(gameState: GameState) {
+        Log.d("GAME", "updateGS: updated")
         when (gameState) {
             GAME_OVER -> showGameOverFragment()
             WIN -> showWinningFragment()
