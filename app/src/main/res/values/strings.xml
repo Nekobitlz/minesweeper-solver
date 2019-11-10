@@ -10,4 +10,5 @@
     <string name="winning_title">You won!</string>
     <string name="winning_btn_reset">Reset</string>
     <string name="winning_btn_back">Back to menu</string>
+    <string name="main_menu_btn_play">PLAY</string>
 </resources>

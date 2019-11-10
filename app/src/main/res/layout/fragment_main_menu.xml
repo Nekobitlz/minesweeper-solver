@@ -17,29 +17,6 @@
         android:text="@string/app_name"
         android:gravity="center" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center|top"
-        android:layout_marginTop="@dimen/spacing_normal_16">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_large_20"
-            android:text="@string/score"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/tv_score_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_small_8"
-            android:textSize="@dimen/font_large_20"
-            tools:text="100000 POINT"/>
-    </LinearLayout>
-
     <Button
         android:id="@+id/btn_play"
         android:layout_width="wrap_content"
@@ -47,6 +24,6 @@
         android:layout_gravity="center|top"
         android:layout_marginTop="@dimen/spacing_huge_32"
         android:textSize="@dimen/font_large_20"
-        android:text="PLAY"/>
+        android:text="@string/main_menu_btn_play"/>
 
 </LinearLayout>
