@@ -1,6 +1,5 @@
 package com.nekobitlz.minesweeper.game.solver
 
-//import android.util.Log
 import com.nekobitlz.minesweeper.game.engine.GameEngine
 import com.nekobitlz.minesweeper.game.enums.CellType
 import com.nekobitlz.minesweeper.game.enums.GameState.NO_STATE
@@ -71,8 +70,6 @@ class Solver {
 
         if (cellGroups.isEmpty() && isolatedCount == gameEngine.board.remainingFlags) {
             isolatedCells.forEach { cell -> gameEngine.handleLongPress(cell.x, cell.y) }
-            //Log.d("Solver", "randomMove: handleLongPress")
-            println("randomMove: handleLongPress")
         } else {
             when (gameEngine.gameState) {
                 NO_STATE -> {
@@ -84,8 +81,6 @@ class Solver {
                 else -> {
                     val cellCord = isolatedCells[getRandomIsolatedCell(isolatedCount)]
                     gameEngine.handleShortPress(cellCord.x, cellCord.y)
-                    //Log.d("Solver", "randomMove: handleShortPress ${cellCord.x} ${cellCord.y}")
-                    println("randomMove: handleShortPress ${cellCord.x} ${cellCord.y}")
                 }
             }
         }
@@ -105,16 +100,12 @@ class Solver {
             when {
                 cellGroup.bombsCount == 0 -> {
                     cellGroup.forEach { cell -> gameEngine.handleShortPress(cell.x, cell.y) }
-                    //Log.d("Solver", "subtractionMethod: handleShortPress")
-                    println("subtractionMethod: handleShortPress")
                     changed = true
                 }
                 cellGroup.bombsCount == cellGroup.size -> {
                     cellGroup.forEach { cell ->
                         if (!cell.cellState.isFlagged()) gameEngine.handleLongPress(cell.x, cell.y)
                     }
-                    //Log.d("Solver", "subtractionMethod: handleLongPress")
-                    println("subtractionMethod: handleLongPress")
                     changed = true
                 }
             }
@@ -163,8 +154,6 @@ class Solver {
 
             if (randomOpenProbability < minProbability && randomOpenProbability < 1 - maxProbability) {
                 randomMove()
-                //Log.d("Solver", "probabilityMethod: randomMove")
-                println("probabilityMethod: randomMove")
             }
         }
     }
@@ -181,13 +170,9 @@ class Solver {
             when {
                 minProbability < 1 - maxProbability && minProbabilityCell.x in 0 until width && minProbabilityCell.y in 0 until height -> {
                     gameEngine.handleShortPress(minProbabilityCell.x, minProbabilityCell.y)
-                    //Log.d("Solver", "probabilityMethod: handleShortPress")
-                    println("probabilityMethod: handleShortPress")
                 }
                 maxProbabilityCell.x in 0 until width && maxProbabilityCell.y in 0 until height -> {
                     gameEngine.handleLongPress(maxProbabilityCell.x, maxProbabilityCell.y)
-                    //Log.d("Solver", "probabilityMethod: handleLongPress")
-                    println("probabilityMethod: handleLongPress")
                 }
             }
 
