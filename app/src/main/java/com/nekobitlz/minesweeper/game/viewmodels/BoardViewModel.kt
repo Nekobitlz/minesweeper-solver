@@ -18,8 +18,8 @@ class BoardViewModel: ViewModel() {
     private val gameState = MutableLiveData<GameState>()
 
     init {
-        cells.value = boardRepository.loadCells()
         engine.value = boardRepository.loadEngine()
+        cells.value = engine.value!!.getCells()
         gameState.value = engine.value!!.gameState
     }
 

@@ -1,7 +1,6 @@
 package com.nekobitlz.minesweeper.game.managers
 
 import com.nekobitlz.minesweeper.game.engine.GameEngine
-import com.nekobitlz.minesweeper.game.models.Cell
 
 object CacheManager {
 
@@ -10,9 +9,6 @@ object CacheManager {
     const val BOMBS_COUNT = 99      /* 24 24 99 - Expert */
 
     private var engine = GameEngine()
-    private var cells = engine.getCells()
-
-    fun loadCells(): Array<Array<Cell>> = cells
 
     fun loadEngine(): GameEngine = engine
 }
